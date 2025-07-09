@@ -11,6 +11,7 @@ import { CrossWordService } from '../service/cross-word-service';
 })
 export class CrossWord implements OnInit{
   grid: Cell [][] =  [];
+  size : number = 0;
 
   private words : Word [] = [
     { clue: "Un félin domestique", answer: "Lion"},
@@ -20,5 +21,35 @@ export class CrossWord implements OnInit{
 
   ngOnInit(): void {
     const layout = this.crossWordService.generateGrid(this.words);
+    this.size = layout.size;
   }
+  
+  buildGrid(wordsWithPlacement: Word[]): Cell[][] {
+    const grid: Cell[][] = Array.from({ length: this.size }, () =>
+      Array.from({ length: this.size }, () => ({
+        x: 0,
+        y: 0,
+        value: '',
+        isBlocked: false
+      }))
+    );
+    for (const word of wordsWithPlacement) {
+      if(word.startX == null || word.startY == null || !word.direction) continue;
+
+      for( let i = 0;  i < word.answer.length;i++) {
+        const x = word.startX + (word.direction === 'horizontal' ? i : 0);
+        const y = word.startY + (word.direction === 'vertical' ? i : 0);
+        grid[y][x] = {
+          x: x,
+          y: y,
+          value: word.answer[i],
+          isBlocked: false
+        };
+      }
+    }
+
+    return grid;
+
+  }
+
 }
