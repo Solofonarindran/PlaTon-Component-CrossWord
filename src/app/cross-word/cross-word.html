@@ -1,1 +1,20 @@
-<p>cross-word works!</p>
+<div class="crossword-grid" [style.gridTemplateColumns]="'repeat(' + size + ', 40px)'">
+    <ng-container *ngFor="let row of grid; let y = index">
+      <ng-container *ngFor="let cell of row; let x = index">
+        <div
+          class="cell"
+          [class.blocked]="cell.isBlocked"
+          [style.gridRow]="y + 1"
+          [style.gridColumn]="x + 1"
+        >
+          <input
+            *ngIf="!cell.isBlocked"
+            [(ngModel)]="cell.value"
+            maxlength="1"
+            (keydown)="onKeyDown($event, y, x)"
+          />
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  
