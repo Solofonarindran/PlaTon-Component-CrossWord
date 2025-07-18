@@ -1,8 +1,8 @@
 export interface Word {
+    word: string;
     clue: string;
-    answer: string;
     startX?: number;
     startY?: number;
-    direction?: 'horizontal' | 'vertical';
+    direction?: 'across' | 'down';
     number?: number
 }
