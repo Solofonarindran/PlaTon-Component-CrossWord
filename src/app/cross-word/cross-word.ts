@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Cell } from '../model/cell';
 import { Word } from '../model/word';
 import { CrossWordService } from '../service/cross-word-service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import CrosswordLayout from 'crossword-layout-generator';
+import { Result } from '../model/result';
 
 @Component({
   selector: 'app-cross-word',
@@ -12,60 +14,58 @@ import { CommonModule } from '@angular/common';
   styleUrl: './cross-word.css'
 })
 export class CrossWord implements OnInit{
-  grid: Cell [][] =  [];
-  size : number = 0;
+  grid: string [][] =  [];
+  results : Result[]= []
+  cols: number = 0;
+  rows: number = 0;
+  size: number = 0;
+ 
+  private crossWordService : CrossWordService = inject(CrossWordService) ;
 
-  private words : Word [] = [
-    { clue: "Un félin domestique", answer: "Lion"},
-    { clue: "Un animal qui aboie", answer : "Chien"},
-    { clue: "Un animal qui a un barbe", answer : "mouton"}
-  ]
-  constructor(private crossWordService : CrossWordService) {}
-
+  private words : {clue : string; answer: string}[] = [{"clue":"that which is established as a rule or model by authority, custom, or general consent","answer":"standard"},{"clue":"a machine that computes","answer":"computer"},{"clue":"the collective designation of items for a particular purpose","answer":"equipment"},{"clue":"an opening or entrance to an inclosed place","answer":"port"},{"clue":"a point where two things can connect and interact","answer":"interface"}]
+  
   ngOnInit(): void {
-    const layout = this.crossWordService.generateGrid(this.words);
-    this.size = layout.size;
-    this.grid = this.buildGrid(layout.words);
+    this.generateGrid();
+  }
+
+  generateGrid(){
+    let layout = this.crossWordService.generateGrid(this.words);
+    this.results = layout.result;
+    console.log(this.results);
+    
+    this.grid = layout.table;
+    this.cols = layout.cols;
+    this.rows = layout.rows;
+
   }
   
-  buildGrid(wordsWithPlacement: Word[]): Cell[][] {
-    const grid: Cell[][] = Array.from({ length: this.size }, () =>
-      Array.from({ length: this.size }, () => ({
-        x: 0,
-        y: 0,
-        value: '',
-        isBlocked: false
-      }))
-    );
-    for (const word of wordsWithPlacement) {
-      if(word.startX == null || word.startY == null || !word.direction) continue;
-
-      for( let i = 0;  i < word.answer.length;i++) {
-        const x = word.startX + (word.direction === 'horizontal' ? i : 0);
-        const y = word.startY + (word.direction === 'vertical' ? i : 0);
-        grid[y][x] = {
-          x: x,
-          y: y,
-          value: word.answer[i],
-          isBlocked: false
-        };
-      }
-    }
-
-    return grid;
-
+  /*tester le commencement de la case*/
+  private isStartCell(x: number, y: number, result: Result) {
+    return result.startx === x+1 && result.starty === y+1;
   }
 
+  /*tester si la case est une case vertical*/
+  isStartCellVertical(x: number, y: number) : boolean{  
+    return this.results.some(result => this.isStartCell(x,y,result) && result.orientation === "down");
+  }
+
+  /*tester si la case est une case horizental*/
+  isStartCellHorizental(x: number, y: number) : boolean{
+    return this.results.some(result => this.isStartCell(x,y,result) && result.orientation === "across")
+  }
+
+  /* methode de récuperation de position grace au startX et startY */
+  
   onKeyDown(event: KeyboardEvent, y: number, x: number): void {
     const key = event.key;
     const isLetter = /^[a-zA-Z]$/.test(key);
 
     if (isLetter) {
-      this.grid[y][x].value = key.toUpperCase();
+      this.grid[y][x] = key.toUpperCase();
       this.focusNextCell(y, x);
       event.preventDefault();
     } else if (key === 'Backspace') {
-      this.grid[y][x].value = '';
+      this.grid[y][x] = '';
       this.focusPrevCell(y, x);
       event.preventDefault();
     } else if (key === 'ArrowRight') {
@@ -78,14 +78,16 @@ export class CrossWord implements OnInit{
       this.focusCell(y - 1, x);
     }
   }
+
   private focusCell(y: number, x: number): void {
-    if (this.grid[y]?.[x] && !this.grid[y][x].isBlocked) {
+    if (this.grid[y]?.[x] && !this.grid[y][x]) {
       const cellInputs = document.querySelectorAll('.crossword-grid input');
       const flatIndex = y * this.grid[0].length + x;
       const target = cellInputs[flatIndex] as HTMLInputElement;
       target?.focus();
     }
   }
+  
   private focusNextCell(y: number, x: number): void {
     let newX = x + 1;
     let newY = y;
@@ -95,7 +97,7 @@ export class CrossWord implements OnInit{
       newY++;
     }
 
-    while (this.grid[newY]?.[newX] && this.grid[newY][newX].isBlocked) {
+    while (this.grid[newY]?.[newX] && this.grid[newY][newX]) {
       newX++;
       if (newX >= this.grid[0].length) {
         newX = 0;
@@ -115,7 +117,7 @@ export class CrossWord implements OnInit{
       newY--;
     }
 
-    while (this.grid[newY]?.[newX] && this.grid[newY][newX].isBlocked) {
+    while (this.grid[newY]?.[newX] && this.grid[newY][newX]) {
       newX--;
       if (newX < 0) {
         newX = this.grid[0].length - 1;
@@ -125,6 +127,5 @@ export class CrossWord implements OnInit{
 
     this.focusCell(newY, newX);
   }
-
 
 }
