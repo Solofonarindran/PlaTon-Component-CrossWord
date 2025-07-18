@@ -1,20 +1,34 @@
-<div class="crossword-grid" [style.gridTemplateColumns]="'repeat(' + size + ', 40px)'">
-    <ng-container *ngFor="let row of grid; let y = index">
-      <ng-container *ngFor="let cell of row; let x = index">
-        <div
-          class="cell"
-          [class.blocked]="cell.isBlocked"
-          [style.gridRow]="y + 1"
-          [style.gridColumn]="x + 1"
-        >
-          <input
-            *ngIf="!cell.isBlocked"
-            [(ngModel)]="cell.value"
-            maxlength="1"
-            (keydown)="onKeyDown($event, y, x)"
-          />
-        </div>
-      </ng-container>
-    </ng-container>
+<div style="display: flex; gap: 40px;">
+  <!-- Partie gauche : Clues -->
+  <div style="flex: 1;" class="clue-panel">
+    <h3>Indices</h3>
+    <ol>
+      <li *ngFor="let result of results ;"><span>{{result.position}} - </span>{{result.clue}}</li>
+    </ol>
   </div>
-  
+
+  <!-- Partie droite : Grille -->
+  <div class="grid-panel">
+    <div 
+        [style.gridTemplateColumns]="'repeat(' + grid[0].length + ', 30px)'"
+        [style.gridTemplateRows]="'repeat(' + grid.length + ', 30px)'"
+        class="crossword-grid">
+      
+      <ng-container *ngFor="let row of grid; let y = index">
+        <ng-container *ngFor="let cell of row; let x = index">
+          
+          <div *ngIf="cell !== '-'" style="position: relative;">
+            <input
+            class="cell-square"
+            (keydown)="onKeyDown($event, y, x)"
+            maxlength="1"
+            />
+            <span [ngClass]="{'isStartCellVertical': isStartCellVertical(x,y), 'isStartCellHorizental': isStartCellHorizental(x,y)}" *ngIf="isStartCellVertical(x,y) || isStartCellHorizental(x,y)">nb</span>
+          </div>
+          
+          <div *ngIf="cell === '-'" class="empty-cell"></div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>
