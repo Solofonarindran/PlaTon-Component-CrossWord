@@ -56,7 +56,7 @@ export class CrossWord implements OnInit{
 
   /* methode de récuperation de position grace au startX et startY */
   
-  onKeyDown(event: KeyboardEvent, y: number, x: number): void {
+  /*onKeyDown(event: KeyboardEvent, y: number, x: number): void {
     const key = event.key;
     const isLetter = /^[a-zA-Z]$/.test(key);
 
@@ -127,5 +127,5 @@ export class CrossWord implements OnInit{
 
     this.focusCell(newY, newX);
   }
-
+*/
 }
