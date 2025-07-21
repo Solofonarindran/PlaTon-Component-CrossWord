@@ -20,7 +20,6 @@
           <div *ngIf="cell !== '-'" style="position: relative;">
             <input
             class="cell-square"
-            (keydown)="onKeyDown($event, y, x)"
             maxlength="1"
             />
             <span [ngClass]="{'isStartCellVertical': isStartCellVertical(x,y), 'isStartCellHorizental': isStartCellHorizental(x,y)}" *ngIf="isStartCellVertical(x,y) || isStartCellHorizental(x,y)">nb</span>
