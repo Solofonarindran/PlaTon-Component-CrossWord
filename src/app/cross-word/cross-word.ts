@@ -29,32 +29,25 @@ export class CrossWord implements OnInit{
   }
 
   generateGrid(){
-    let layout = this.crossWordService.generateGrid(this.words);
-    this.results = layout.result;
-    console.log(this.results);
-    
-    this.grid = layout.table;
-    this.cols = layout.cols;
-    this.rows = layout.rows;
-
+    this.crossWordService.generateGridService(this.words);
+    this.results = this.crossWordService.getResults();
+    this.grid = this.crossWordService.getGrid();
+  
   }
   
-  /*tester le commencement de la case*/
-  private isStartCell(x: number, y: number, result: Result) {
-    return result.startx === x+1 && result.starty === y+1;
-  }
-
-  /*tester si la case est une case vertical*/
+  /* check if the cell is vertical word */
   isStartCellVertical(x: number, y: number) : boolean{  
-    return this.results.some(result => this.isStartCell(x,y,result) && result.orientation === "down");
+    return this.crossWordService.isStartCellDownService(x,y);
   }
 
-  /*tester si la case est une case horizental*/
+  /* check if the cell is horizental word */
   isStartCellHorizental(x: number, y: number) : boolean{
-    return this.results.some(result => this.isStartCell(x,y,result) && result.orientation === "across")
+    return this.crossWordService.isStartCellAcrossService(x,y);
   }
 
   /* methode de récuperation de position grace au startX et startY */
+  
+
   
   /*onKeyDown(event: KeyboardEvent, y: number, x: number): void {
     const key = event.key;
