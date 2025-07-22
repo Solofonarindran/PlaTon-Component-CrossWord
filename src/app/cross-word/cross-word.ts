@@ -32,7 +32,6 @@ export class CrossWord implements OnInit{
     this.crossWordService.generateGridService(this.words);
     this.results = this.crossWordService.getResults();
     this.grid = this.crossWordService.getGrid();
-  
   }
   
   /* check if the cell is vertical word */
@@ -46,79 +45,14 @@ export class CrossWord implements OnInit{
   }
 
   /* methode de récuperation de position grace au startX et startY */
+  indexByCoordonateXY(x: number, y:number) : Result {
+    return this.crossWordService.indexByCoordonateXYService(x,y);
   
+  }
+
+
 
   
-  /*onKeyDown(event: KeyboardEvent, y: number, x: number): void {
-    const key = event.key;
-    const isLetter = /^[a-zA-Z]$/.test(key);
+ 
 
-    if (isLetter) {
-      this.grid[y][x] = key.toUpperCase();
-      this.focusNextCell(y, x);
-      event.preventDefault();
-    } else if (key === 'Backspace') {
-      this.grid[y][x] = '';
-      this.focusPrevCell(y, x);
-      event.preventDefault();
-    } else if (key === 'ArrowRight') {
-      this.focusCell(y, x + 1);
-    } else if (key === 'ArrowLeft') {
-      this.focusCell(y, x - 1);
-    } else if (key === 'ArrowDown') {
-      this.focusCell(y + 1, x);
-    } else if (key === 'ArrowUp') {
-      this.focusCell(y - 1, x);
-    }
-  }
-
-  private focusCell(y: number, x: number): void {
-    if (this.grid[y]?.[x] && !this.grid[y][x]) {
-      const cellInputs = document.querySelectorAll('.crossword-grid input');
-      const flatIndex = y * this.grid[0].length + x;
-      const target = cellInputs[flatIndex] as HTMLInputElement;
-      target?.focus();
-    }
-  }
-  
-  private focusNextCell(y: number, x: number): void {
-    let newX = x + 1;
-    let newY = y;
-
-    if (newX >= this.grid[0].length) {
-      newX = 0;
-      newY++;
-    }
-
-    while (this.grid[newY]?.[newX] && this.grid[newY][newX]) {
-      newX++;
-      if (newX >= this.grid[0].length) {
-        newX = 0;
-        newY++;
-      }
-    }
-
-    this.focusCell(newY, newX);
-  }
-
-  private focusPrevCell(y: number, x: number): void {
-    let newX = x - 1;
-    let newY = y;
-
-    if (newX < 0) {
-      newX = this.grid[0].length - 1;
-      newY--;
-    }
-
-    while (this.grid[newY]?.[newX] && this.grid[newY][newX]) {
-      newX--;
-      if (newX < 0) {
-        newX = this.grid[0].length - 1;
-        newY--;
-      }
-    }
-
-    this.focusCell(newY, newX);
-  }
-*/
 }
