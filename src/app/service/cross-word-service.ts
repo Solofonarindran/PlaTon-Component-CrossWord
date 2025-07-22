@@ -17,6 +17,7 @@ export class CrossWordService {
     const layout = clg.generateLayout(words);
     this.grid = layout.table;
     this.results = layout.result;
+    console.log(layout)
   }
 
   /* getter of retrieve grid */
@@ -46,6 +47,26 @@ export class CrossWordService {
   isStartCellAcrossService(x: number, y: number): boolean {
     return this.results.some(result => result.orientation === "across" 
                                        && this.isStartCell(x,y,result))
+  }
+
+  /* This methode return the position (index) of the word in clue */
+
+ /* indexByCoordonateXY(x: number, y: number) {
+    let index = 0;
+    this.results.forEach((result,index) => {
+      if (this.isStartCell(x,y,result)) {
+        index = result.position
+      }
+    })
+    return index
+  } */
+  indexByCoordonateXYService(x: number, y:number): Result {
+    const result = this.results.find(result => this.isStartCell(x,y,result))
+    if(!result) {
+      return {clue: "", answer: "", startx: 0, starty: 0, orientation: "", position: 0}
+    } else {
+      return result
+    }
   }
 
 }
