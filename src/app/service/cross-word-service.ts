@@ -60,7 +60,8 @@ export class CrossWordService {
     })
     return index
   } */
-  indexByCoordonateXYService(x: number, y:number): Result {
+
+  resultByCoordonateXYService(x: number, y:number): Result {
     const result = this.results.find(result => this.isStartCell(x,y,result))
     if(!result) {
       return {clue: "", answer: "", startx: 0, starty: 0, orientation: "", position: 0}
@@ -68,6 +69,7 @@ export class CrossWordService {
       return result
     }
   }
+  
 
 }
 
