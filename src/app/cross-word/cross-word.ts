@@ -15,7 +15,7 @@ import { Result } from '../model/result';
 })
 export class CrossWord implements OnInit{
   grid: string [][] =  [];
-  results : Result[]= []
+  results : Result[]= [];
   cols: number = 0;
   rows: number = 0;
   size: number = 0;
@@ -32,6 +32,7 @@ export class CrossWord implements OnInit{
     this.crossWordService.generateGridService(this.words);
     this.results = this.crossWordService.getResults();
     this.grid = this.crossWordService.getGrid();
+    console.log(this.results)
   }
   
   /* check if the cell is vertical word */
@@ -45,12 +46,29 @@ export class CrossWord implements OnInit{
   }
 
   /* methode de récuperation de position grace au startX et startY */
-  indexByCoordonateXY(x: number, y:number) : Result {
-    return this.crossWordService.indexByCoordonateXYService(x,y);
+  resultByCoordonateXY(x: number, y:number) : Result {
+    return this.crossWordService.resultByCoordonateXYService(x,y);
   
   }
+ 
 
+  onKeyUp(event: KeyboardEvent,result: Result) {
+   
+    const key = event.key
+    const isLetter = /^[a-zA-Z]$/.test(key);
+    if (isLetter) {
+      return;
+    }else if(key === 'Tab') {
+      
+    }else {
+      return;
+    }
 
+    console.log(event.key)
+  }
+ 
+
+ 
 
   
  
