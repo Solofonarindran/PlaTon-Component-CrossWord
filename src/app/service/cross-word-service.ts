@@ -69,6 +69,22 @@ export class CrossWordService {
       return result
     }
   }
+
+  coordonateRedirectionByTabulationService(x : number, y : number, orientation : string) : number [] {
+    let nextX = x;
+    let nextY = y;
+    switch (orientation) {
+      case "across":
+        nextX ++;
+        break;
+      case "down":
+        nextY ++;
+        break;
+      default:
+        break;
+    }
+    return [nextX,nextY]
+  }
   
 
 }
