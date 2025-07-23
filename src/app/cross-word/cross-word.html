@@ -21,8 +21,11 @@
             <input
             class="cell-square"
             maxlength="1"
+            (keyup)="onKeyUp($event,resultByCoordonateXY(x,y))"
             />
-            <span [ngClass]="{'isStartCellVertical': isStartCellVertical(x,y), 'isStartCellHorizental': isStartCellHorizental(x,y)}" *ngIf="isStartCellVertical(x,y) || isStartCellHorizental(x,y)">nb</span>
+            <span [ngClass]="{'isStartCellVertical': isStartCellVertical(x,y), 'isStartCellHorizental': isStartCellHorizental(x,y)}" *ngIf="isStartCellVertical(x,y) || isStartCellHorizental(x,y)">
+              {{resultByCoordonateXY(x,y).position}}
+            </span>
           </div>
           
           <div *ngIf="cell === '-'" class="empty-cell"></div>
