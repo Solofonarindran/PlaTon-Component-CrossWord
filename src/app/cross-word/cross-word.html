@@ -21,6 +21,9 @@
             <input
             class="cell-square"
             maxlength="1"
+            [attr.data-x]="x"
+            [attr.data-y]="y"
+          
             (keyup)="onKeyUp($event,resultByCoordonateXY(x,y))"
             />
             <span [ngClass]="{'isStartCellVertical': isStartCellVertical(x,y), 'isStartCellHorizental': isStartCellHorizental(x,y)}" *ngIf="isStartCellVertical(x,y) || isStartCellHorizental(x,y)">
