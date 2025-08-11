@@ -16,22 +16,25 @@
       
       <ng-container *ngFor="let row of grid; let y = index">
         <ng-container *ngFor="let cell of row; let x = index">
+          @if(cell !== '-') {
+            <div style="position: relative;">
+              <input
+              class="cell-square"
+              maxlength="1"
+              [attr.data-x]="x"
+              [attr.data-y]="y"
+            
+              (keyup)="onKeyUp($event,resultByCoordonateXY(x,y))"
+              />
+              <span [ngClass]="{'isStartCellVertical': isStartCellVertical(x,y), 'isStartCellHorizental': isStartCellHorizental(x,y)}" *ngIf="isStartCellVertical(x,y) || isStartCellHorizental(x,y)">
+                {{resultByCoordonateXY(x,y).position}}
+              </span>
+            </div>
+          }
+          @else {
+            <div class="empty-cell"></div>
+          }
           
-          <div *ngIf="cell !== '-'" style="position: relative;">
-            <input
-            class="cell-square"
-            maxlength="1"
-            [attr.data-x]="x"
-            [attr.data-y]="y"
-          
-            (keyup)="onKeyUp($event,resultByCoordonateXY(x,y))"
-            />
-            <span [ngClass]="{'isStartCellVertical': isStartCellVertical(x,y), 'isStartCellHorizental': isStartCellHorizental(x,y)}" *ngIf="isStartCellVertical(x,y) || isStartCellHorizental(x,y)">
-              {{resultByCoordonateXY(x,y).position}}
-            </span>
-          </div>
-          
-          <div *ngIf="cell === '-'" class="empty-cell"></div>
         </ng-container>
       </ng-container>
     </div>
