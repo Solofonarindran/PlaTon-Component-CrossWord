@@ -52,25 +52,21 @@ export class CrossWord implements OnInit{
   }
  
 
-  onKeyUp(event: KeyboardEvent,result: Result) {
+  onKeyDown(event: KeyboardEvent,result: Result) {
    
     const key = event.key
     const isLetter = /^[a-zA-Z]$/.test(key);
     if (isLetter) {
+      console.log(key)
       return;
     }else if(key === 'Tab') {
       
+      console.log(result)
     }else {
       return;
     }
 
-    console.log(event.key)
   }
- 
-
- 
-
-  
  
 
 }
