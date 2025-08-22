@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Cell } from '../model/cell';
-import { Word } from '../model/word';
 import { CrossWordService } from '../service/cross-word-service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import CrosswordLayout from 'crossword-layout-generator';
 import { Result } from '../model/result';
+import { CellActiveInterface } from '../model/cell-active-interface';
+import CellActive from '../model/cell-active'
 
 @Component({
   selector: 'app-cross-word',
@@ -15,14 +15,13 @@ import { Result } from '../model/result';
 })
 export class CrossWord implements OnInit{
   grid: string [][] =  [];
-  results : Result[]= [];
-  cols: number = 0;
-  rows: number = 0;
-  size: number = 0;
- 
+  results : Result[]= []; 
+  inProgress : boolean = false;
+  cellActive : CellActiveInterface = new CellActive(0,"",0,0);
+
   private crossWordService : CrossWordService = inject(CrossWordService) ;
 
-  private words : {clue : string; answer: string}[] = [{"clue":"that which is established as a rule or model by authority, custom, or general consent","answer":"standard"},{"clue":"a machine that computes","answer":"computer"},{"clue":"the collective designation of items for a particular purpose","answer":"equipment"},{"clue":"an opening or entrance to an inclosed place","answer":"port"},{"clue":"a point where two things can connect and interact","answer":"interface"}]
+  private words : {clue : string; answer: string}[] = [{"clue":"Un animal domestique qui boie","answer":"chien"},{"clue":"je suis vide et rien ne m'empêche de m'appeler","answer":"néant"},{"clue":"the collective designation of items for a particular purpose","answer":"equipment"},{"clue":"an opening or entrance to an inclosed place","answer":"port"},{"clue":"Capital de Mada","answer":"interface"}]
   
   ngOnInit(): void {
     this.generateGrid();
@@ -32,7 +31,6 @@ export class CrossWord implements OnInit{
     this.crossWordService.generateGridService(this.words);
     this.results = this.crossWordService.getResults();
     this.grid = this.crossWordService.getGrid();
-    console.log(this.results)
   }
   
   /* check if the cell is vertical word */
@@ -51,8 +49,63 @@ export class CrossWord implements OnInit{
   
   }
  
+  /* focus for the next cell */
+  /*focusNextCell(x : number, y : number) {
+    if(!this.inProgress) {
+      const result = this.crossWordService.resultByCoordonateXYService(x, y)
+      this.cellActive = new CellActive(result.answer.length,result.orientation,x,y);
+      this.inProgress = true;
+    }
+    const nextCoordonate = this.crossWordService.coordonateRedirectionByTabulationService(this.cellActive.orientationWordActive,this.cellActive.sizeOfWordActive,this.cellActive.x, this.cellActive.y)
+    console.log(nextCoordonate)
+    const nextX = nextCoordonate.x
+    const nextY = nextCoordonate.y
+    const status = nextCoordonate.status
 
-  onKeyDown(event: KeyboardEvent,result: Result) {
+    if(!status) {
+      this.inProgress = false
+    }
+
+    this.cellActive.x = nextX;
+    this.cellActive.y = nextY;
+    
+    /* put the next coordonate with the focus 
+    const nextCell = document.querySelector(`[data-x="${nextX}"][data-y="${nextY}"]`) as HTMLInputElement
+    nextCell.focus()
+
+  }*/
+
+  focusNextCell(x : number, y : number) {
+    let result ;
+    let nextX = x;
+    let nextY = y;
+    const results = this.crossWordService.nextResultByXYFocusService(x, y)
+    if (results.length > 1) {
+      if(this.inProgress) {
+        result = results.find(result => result.orientation === this.cellActive.orientationWordActive)
+      }else {
+        /* prend la première position du tableau quoi se soit de l'orientation */
+        result = results[0]
+      }
+    } else {
+        result = results[0]
+    }
+    
+    if(result) {
+      const nextCoordonate = this.crossWordService.coordonateRedirectionByTabulationService(result.orientation, result.answer.length, x, y)
+      nextX = nextCoordonate.x
+      nextY = nextCoordonate.y
+
+      this.cellActive = new CellActive(result.answer.length,result.orientation,x,y);
+      this.inProgress = nextCoordonate.status;
+
+      const nextCell = document.querySelector(`[data-x="${nextX}"][data-y="${nextY}"]`) as HTMLInputElement
+      nextCell.focus()
+    }
+    
+  }
+
+  onKeyDown(event: KeyboardEvent, x : number, y : number) {
    
     const key = event.key
     const isLetter = /^[a-zA-Z]$/.test(key);
@@ -60,8 +113,11 @@ export class CrossWord implements OnInit{
       console.log(key)
       return;
     }else if(key === 'Tab') {
+
+      /* désactiver le comportement par défaut du navigateur */
+      event.preventDefault()
+      this.focusNextCell(x, y)
       
-      console.log(result)
     }else {
       return;
     }
