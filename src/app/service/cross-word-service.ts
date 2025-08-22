@@ -5,6 +5,9 @@ import { Word } from '../model/word';
 
 import * as clg from 'crossword-layout-generator';
 import { Result } from '../model/result';
+import { Coordonate } from '../model/coordonate';
+import { NextCoordonate } from '../model/next-coordonate';
+import { popResultSelector } from 'rxjs/internal/util/args';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +15,7 @@ import { Result } from '../model/result';
 export class CrossWordService {
   private grid: string[][] = [];
   private results: Result[] = [];
-  
+
   generateGridService(words: { clue : string; answer: string }[]) {
     const layout = clg.generateLayout(words);
     this.grid = layout.table;
@@ -49,18 +52,6 @@ export class CrossWordService {
                                        && this.isStartCell(x,y,result))
   }
 
-  /* This methode return the position (index) of the word in clue */
-
- /* indexByCoordonateXY(x: number, y: number) {
-    let index = 0;
-    this.results.forEach((result,index) => {
-      if (this.isStartCell(x,y,result)) {
-        index = result.position
-      }
-    })
-    return index
-  } */
-
   resultByCoordonateXYService(x: number, y:number): Result {
     const result = this.results.find(result => this.isStartCell(x,y,result))
     if(!result) {
@@ -69,24 +60,42 @@ export class CrossWordService {
       return result
     }
   }
+  
+  /*lambda for nextResultByXYFocusService*/
+  lambda(result : Result, x : number, y : number) : boolean {
+    if(result.orientation == "across") {
+      return result.starty === y + 1 && ((x+1) >= result.startx) && ((x+1)< result.startx + result.answer.length )
+    } else {
+      return result.startx === x + 1 && ( (y+1) >= result.starty) && ((y+1)< result.starty + result.answer.length )
+    }
+   
+  }
 
-  coordonateRedirectionByTabulationService(x : number, y : number, orientation : string) : number [] {
+  /* method to retrieve the next by result of x  and y */
+  nextResultByXYFocusService(x : number, y : number) : Result [] {
+    console.log(x,y)
+    return this.results.filter(result => this.lambda(result,x,y))
+  }
+
+  coordonateRedirectionByTabulationService(orientation : string, size : number, x : number, y : number) : Coordonate{
     let nextX = x;
     let nextY = y;
+    let status : boolean = true;
+    
     switch (orientation) {
       case "across":
         nextX ++;
-        break;
+        (size - nextX) <= 1 ? status = false : status = true;
+        return new NextCoordonate(nextX,nextY,status)
       case "down":
         nextY ++;
-        break;
+        (size - nextY) <= 1 ? status = false : status = true;
+        return new NextCoordonate(nextX,nextY,status)
       default:
         break;
-    }
-    return [nextX,nextY]
+    } 
+    return new NextCoordonate(nextX,nextY,status);
   }
-  
-
 }
 
 
