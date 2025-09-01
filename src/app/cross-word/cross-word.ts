@@ -108,11 +108,11 @@ export class CrossWord implements OnInit{
   onKeyDown(event: KeyboardEvent, x : number, y : number) {
    
     const key = event.key
+    console.log(key)
     const isLetter = /^[a-zA-Z]$/.test(key);
     if (isLetter) {
-      console.log(key)
       return;
-    }else if(key === 'Tab') {
+    }else if(key === 'Tab' || key === 'ArrowRight') {
 
       /* désactiver le comportement par défaut du navigateur */
       event.preventDefault()
@@ -121,7 +121,6 @@ export class CrossWord implements OnInit{
     }else {
       return;
     }
-
   }
  
 
