@@ -1,7 +1,7 @@
 <div style="display: flex; gap: 40px;">
   <!-- Partie gauche : Clues -->
   <div style="flex: 1;" class="clue-panel">
-    <h3>Indices</h3>
+    <h3>Définitions</h3>
     <ol>
       <li *ngFor="let result of results ;"><span>{{result.position}} - </span>{{result.clue}}</li>
     </ol>
@@ -25,6 +25,7 @@
               [attr.data-y]="y"
             
               (keydown)="onKeyDown($event,x,y)"
+               
               />
               <span [ngClass]="{'isStartCellVertical': isStartCellVertical(x,y), 'isStartCellHorizental': isStartCellHorizental(x,y)}" *ngIf="isStartCellVertical(x,y) || isStartCellHorizental(x,y)">
                 {{resultByCoordonateXY(x,y).position}}
@@ -37,6 +38,8 @@
           
         </ng-container>
       </ng-container>
+
+
     </div>
   </div>
 </div>
