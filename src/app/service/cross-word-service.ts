@@ -22,8 +22,6 @@ export class CrossWordService {
     this.grid = layout.table;
     this.results = layout.result;
    this.userAnswers = this.generateUserAnswers()
-    console.log(this.results)
-    console.log(this.userAnswers)
   }
 
 
