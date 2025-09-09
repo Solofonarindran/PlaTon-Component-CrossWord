@@ -15,13 +15,28 @@ import { popResultSelector } from 'rxjs/internal/util/args';
 export class CrossWordService {
   private grid: string[][] = [];
   private results: Result[] = [];
+  private userAnswers : Result[] = []
 
   generateGridService(words: { clue : string; answer: string }[]) {
     const layout = clg.generateLayout(words);
     this.grid = layout.table;
     this.results = layout.result;
-    console.log(layout)
+   this.userAnswers = this.generateUserAnswers()
+    console.log(this.results)
+    console.log(this.userAnswers)
   }
+
+
+  /* generate user answers */
+  generateUserAnswers() {
+    let resultsCopy = this.results
+    const userAnswers = resultsCopy.map((result) => ({
+      ...result,
+      answer: '-'.repeat(result.answer.length)
+    }))
+    return userAnswers
+  } 
+ 
 
   /* getter of retrieve grid */
   getGrid(): string[][] {
@@ -73,7 +88,6 @@ export class CrossWordService {
 
   /* method to retrieve the next by result of x  and y */
   nextResultByXYFocusService(x : number, y : number) : Result [] {
-    console.log(x,y)
     return this.results.filter(result => this.lambda(result,x,y))
   }
 
