@@ -21,7 +21,7 @@ export class CrossWord implements OnInit{
 
   private crossWordService : CrossWordService = inject(CrossWordService) ;
 
-  private words : {clue : string; answer: string}[] = [{"clue":"Un animal domestique qui boie","answer":"chien"},{"clue":"je suis vide et rien ne m'empêche de m'appeler","answer":"néant"},{"clue":"the collective designation of items for a particular purpose","answer":"equipment"},{"clue":"an opening or entrance to an inclosed place","answer":"port"},{"clue":"Capital de Mada","answer":"interface"}]
+  private words : {clue : string; answer: string}[] = [{"clue":"Un animal domestique qui boie","answer":"chien"},{"clue":"je suis vide et rien ne m'empêche de m'appeler","answer":"néant"},{"clue":"the collective designation of items for a particular purpose","answer":"equipment"},{"clue":"an opening or entrance to an inclosed place","answer":"port"},{"clue":"Capital de Madagascar","answer":"interface"}]
   
   ngOnInit(): void {
     this.generateGrid();
@@ -108,20 +108,34 @@ export class CrossWord implements OnInit{
   onKeyDown(event: KeyboardEvent, x : number, y : number) {
    
     const key = event.key
-    console.log(key)
     const isLetter = /^[a-zA-Z]$/.test(key);
     if (isLetter) {
       return;
     }else if(key === 'Tab' || key === 'ArrowRight') {
-
       /* désactiver le comportement par défaut du navigateur */
       event.preventDefault()
       this.focusNextCell(x, y)
-      
     }else {
       return;
     }
   }
- 
+  
+   /*getUserAnswers() : Result []{
+
+    this.results.forEach(element => {
+      const orientation = element.orientation;
+      const answer = element.answer
+      const position = element.position
+      console.log(element.position)
+      for(let i = 0; i < answer.length; i++) {
+        const x = orientation === 'across' ? element.startx + i : element.startx
+        const y = orientation === 'down' ? element.starty + i : element.starty
+        console.log(x,y)
+      }
+      
+
+    });
+    return this.results;
+   }*/
 
 }
