@@ -21,7 +21,7 @@ export class CrossWordService {
     const layout = clg.generateLayout(words);
     this.grid = layout.table;
     this.results = layout.result;
-   this.userAnswers = this.generateUserAnswers()
+    this.userAnswers = this.generateUserAnswers()
   }
 
 
