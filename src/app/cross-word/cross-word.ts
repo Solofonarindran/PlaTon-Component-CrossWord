@@ -15,7 +15,8 @@ import CellActive from '../model/cell-active'
 })
 export class CrossWord implements OnInit{
   grid: string [][] =  [];
-  results : Result[]= []; 
+  results : Result[]= [];
+  userAnswers : Result[] = [];
   inProgress : boolean = false;
   cellActive : CellActiveInterface = new CellActive(0,"",0,0);
 
@@ -30,6 +31,7 @@ export class CrossWord implements OnInit{
   generateGrid(){
     this.crossWordService.generateGridService(this.words);
     this.results = this.crossWordService.getResults();
+    this.userAnswers = this.crossWordService.generateUserAnswers();
     this.grid = this.crossWordService.getGrid();
   }
   
@@ -106,10 +108,29 @@ export class CrossWord implements OnInit{
   }
 
   onKeyDown(event: KeyboardEvent, x : number, y : number) {
-   
+ 
     const key = event.key
     const isLetter = /^[a-zA-Z]$/.test(key);
     if (isLetter) {
+      event.preventDefault()
+      const input = event.target as HTMLInputElement
+      input.value = key
+
+      const resultFilter = this.userAnswers.filter(result => (result.startx === x + 1  && result.orientation === "down") || (result.starty === y + 1 && result.orientation === "across"))
+      resultFilter.forEach(result =>{
+        let gap = 0
+        if(result.orientation === "across") {
+          gap = (x + 1) - result.startx
+        }else {
+          gap = (y + 1) - result.starty
+        }
+        const answer = result.answer.split("")
+        answer[gap] = key
+        result.answer = answer.join("")
+        return result
+      })
+      console.log(this.userAnswers)
+      this.focusNextCell(x, y)
       return;
     }else if(key === 'Tab' || key === 'ArrowRight') {
       /* désactiver le comportement par défaut du navigateur */
