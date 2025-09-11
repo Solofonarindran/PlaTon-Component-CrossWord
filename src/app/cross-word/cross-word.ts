@@ -36,11 +36,13 @@ export class CrossWord implements OnInit{
   }
   
   /* check if the cell is vertical word */
+  /* used to place a number of clue's word */
   isStartCellVertical(x: number, y: number) : boolean{  
     return this.crossWordService.isStartCellDownService(x,y);
   }
 
   /* check if the cell is horizental word */
+  /* used to place a number of clue's word */
   isStartCellHorizental(x: number, y: number) : boolean{
     return this.crossWordService.isStartCellAcrossService(x,y);
   }
@@ -51,7 +53,7 @@ export class CrossWord implements OnInit{
   
   }
  
-
+  /** focus the cursor to the next  cell by the coordonate x y */
   focusNextCell(x : number, y : number) {
     let result ;
     let nextX = x;
@@ -90,7 +92,7 @@ export class CrossWord implements OnInit{
       event.preventDefault()
       const input = event.target as HTMLInputElement
       input.value = key
-
+      
       const resultFilter = this.userAnswers.filter(result => (result.startx === x + 1  && result.orientation === "down") || (result.starty === y + 1 && result.orientation === "across"))
       resultFilter.forEach(result =>{
         let gap = 0
