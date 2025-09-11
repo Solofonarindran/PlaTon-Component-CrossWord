@@ -84,6 +84,22 @@ export class CrossWord implements OnInit{
     
   }
 
+  updateValueUserAnswer(key : string, x : number, y : number) {
+    const resultFilter = this.userAnswers.filter(result => (result.startx === x + 1  && result.orientation === "down") || (result.starty === y + 1 && result.orientation === "across"))
+    resultFilter.forEach(result =>{
+      let gap = 0
+      if(result.orientation === "across") {
+        gap = (x + 1) - result.startx
+      }else {
+        gap = (y + 1) - result.starty
+      }
+      const answer = result.answer.split("")
+      answer[gap] = key
+      result.answer = answer.join("")
+      return result
+    })
+  }
+
   onKeyDown(event: KeyboardEvent, x : number, y : number) {
  
     const key = event.key
@@ -92,21 +108,8 @@ export class CrossWord implements OnInit{
       event.preventDefault()
       const input = event.target as HTMLInputElement
       input.value = key
-      
-      const resultFilter = this.userAnswers.filter(result => (result.startx === x + 1  && result.orientation === "down") || (result.starty === y + 1 && result.orientation === "across"))
-      resultFilter.forEach(result =>{
-        let gap = 0
-        if(result.orientation === "across") {
-          gap = (x + 1) - result.startx
-        }else {
-          gap = (y + 1) - result.starty
-        }
-        const answer = result.answer.split("")
-        answer[gap] = key
-        result.answer = answer.join("")
-        return result
-      })
-      console.log(this.userAnswers)
+
+      this.updateValueUserAnswer(key,x,y)
       this.focusNextCell(x, y)
       return;
     }else if(key === 'Tab' || key === 'ArrowRight') {
