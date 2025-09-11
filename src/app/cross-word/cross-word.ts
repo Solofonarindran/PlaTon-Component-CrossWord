@@ -51,31 +51,6 @@ export class CrossWord implements OnInit{
   
   }
  
-  /* focus for the next cell */
-  /*focusNextCell(x : number, y : number) {
-    if(!this.inProgress) {
-      const result = this.crossWordService.resultByCoordonateXYService(x, y)
-      this.cellActive = new CellActive(result.answer.length,result.orientation,x,y);
-      this.inProgress = true;
-    }
-    const nextCoordonate = this.crossWordService.coordonateRedirectionByTabulationService(this.cellActive.orientationWordActive,this.cellActive.sizeOfWordActive,this.cellActive.x, this.cellActive.y)
-    console.log(nextCoordonate)
-    const nextX = nextCoordonate.x
-    const nextY = nextCoordonate.y
-    const status = nextCoordonate.status
-
-    if(!status) {
-      this.inProgress = false
-    }
-
-    this.cellActive.x = nextX;
-    this.cellActive.y = nextY;
-    
-    /* put the next coordonate with the focus 
-    const nextCell = document.querySelector(`[data-x="${nextX}"][data-y="${nextY}"]`) as HTMLInputElement
-    nextCell.focus()
-
-  }*/
 
   focusNextCell(x : number, y : number) {
     let result ;
@@ -141,22 +116,4 @@ export class CrossWord implements OnInit{
     }
   }
   
-   /*getUserAnswers() : Result []{
-
-    this.results.forEach(element => {
-      const orientation = element.orientation;
-      const answer = element.answer
-      const position = element.position
-      console.log(element.position)
-      for(let i = 0; i < answer.length; i++) {
-        const x = orientation === 'across' ? element.startx + i : element.startx
-        const y = orientation === 'down' ? element.starty + i : element.starty
-        console.log(x,y)
-      }
-      
-
-    });
-    return this.results;
-   }*/
-
 }
